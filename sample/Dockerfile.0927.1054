@@ -1,0 +1,30 @@
+FROM centos
+
+MAINTAINER zhangshanci "843248880@qq.com"
+
+ENV REFRESHED_AT 2016-09-27
+
+RUN mkdir -p /var/www/html
+
+RUN yum -y install wget
+
+RUN if [ -f /etc/yum.repos.d/CentOS-Base.repo ];then mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup;fi
+
+RUN wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+RUN yum clean all
+RUN yum makecache
+
+RUN if [ -f /etc/yum.repos.d/epel.repo ];then /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.backup;fi
+
+RUN if [ -f /etc/yum.repos.d/epel-testing.repo ];then mv /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel-testing.repo.backup;fi
+
+RUN wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+
+RUN yum -y install nginx
+
+ADD nginx/global.conf /etc/nginx/conf.d/
+
+ADD nginx/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+
